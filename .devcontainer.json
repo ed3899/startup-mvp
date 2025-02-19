@@ -7,5 +7,8 @@
     "ghcr.io/devcontainers-extra/features/amplify-cli:2": {
       "version": "latest"
     },
+    "ghcr.io/devcontainers-extra/features/aws-cdk:2": {
+      "version": "latest"
+    }
   }
 }
