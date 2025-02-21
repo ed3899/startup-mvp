@@ -1,10 +1,35 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./page.module.css";
+import {fetchTodos, createTodo, client} from "@/db/client";
+import {useState, useEffect} from "react";
+import type {Schema} from "../../amplify/data/resource";
 
 export default function Home() {
+  const [todos, setTodos] = useState<Schema["Todo"]["type"][]>([]);
+
+  useEffect(() => {
+    const sub = client.models.Todo.observeQuery().subscribe({
+      next: ({items}) => {
+        setTodos([...items]);
+      },
+    });
+
+    return () => sub.unsubscribe();
+  }, []);
+
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
+      <button onClick={fetchTodos}>fetch todos</button>
+      <ul>
+        {todos.map(({id, content}) => (
+          <li key={id}>{content}</li>
+        ))}
+      </ul>
+      <button onClick={createTodo}>create todo</button>
+
+      {/* <main className={styles.main}>
         <Image
           className={styles.logo}
           src="/next.svg"
@@ -25,8 +50,7 @@ export default function Home() {
             className={styles.primary}
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             <Image
               className={styles.logo}
               src="/vercel.svg"
@@ -40,8 +64,7 @@ export default function Home() {
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.secondary}
-          >
+            className={styles.secondary}>
             Read our docs
           </a>
         </div>
@@ -50,8 +73,7 @@ export default function Home() {
         <a
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
           target="_blank"
-          rel="noopener noreferrer"
-        >
+          rel="noopener noreferrer">
           <Image
             aria-hidden
             src="/file.svg"
@@ -64,8 +86,7 @@ export default function Home() {
         <a
           href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
           target="_blank"
-          rel="noopener noreferrer"
-        >
+          rel="noopener noreferrer">
           <Image
             aria-hidden
             src="/window.svg"
@@ -78,8 +99,7 @@ export default function Home() {
         <a
           href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
           target="_blank"
-          rel="noopener noreferrer"
-        >
+          rel="noopener noreferrer">
           <Image
             aria-hidden
             src="/globe.svg"
@@ -89,7 +109,7 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
-      </footer>
+      </footer> */}
     </div>
   );
 }
